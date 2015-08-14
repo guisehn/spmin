@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns:dm0="http://schemas.microsoft.com/VisualStudio/2008/DslTools/Core" dslVersion="1.0.0.0" Id="1990e5cf-5125-497e-afcd-12227c7a45bb" solutionId="1990e5cf-5125-497e-afcd-12227c7a45bb" resetWebServer="false" name="SPMin" xmlns="http://schemas.microsoft.com/VisualStudio/2008/SharePointTools/PackageModel">
+  <assemblies>
+    <customAssembly location="AjaxMin.dll" deploymentTarget="GlobalAssemblyCache" sourcePath="Libraries\AjaxMin.dll" />
+  </assemblies>
+  <features>
+    <featureReference itemId="09480638-616b-48cf-a802-f89368824ef5" />
+  </features>
+</package>
