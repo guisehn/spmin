@@ -4,6 +4,6 @@
     <ProjectItemFile Source="Elements.xml" Target="SafeControlModule\" Type="ElementManifest" />
   </Files>
   <SafeControls>
-    <SafeControl Name="CssRegistration" Assembly="$SharePoint.Project.AssemblyFullName$" Namespace="SPMin.Controls" TypeName="*" IsSafe="true" IsSafeAgainstScript="false" />
+    <SafeControl Assembly="$SharePoint.Project.AssemblyFullName$" Namespace="SPMin.Controls" TypeName="*" IsSafe="true" IsSafeAgainstScript="false" />
   </SafeControls>
 </ProjectItem>
