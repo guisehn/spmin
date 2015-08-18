@@ -46,6 +46,8 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="Microsoft.SharePoint" />
@@ -53,6 +55,11 @@
   <ItemGroup>
     <Compile Include="CheckInType.cs" />
     <Compile Include="CheckInTypeDetector.cs" />
+    <Compile Include="Controls\AssetRegistrationControl.cs" />
+    <Compile Include="Controls\CssRegistration.cs" />
+    <Compile Include="Controls\JsRegistration.cs" />
+    <Compile Include="Environment.cs" />
+    <Compile Include="EnvironmentDetector.cs" />
     <Compile Include="FileNameParser.cs" />
     <Compile Include="FileMinifier.cs" />
     <Compile Include="Minifiers\CssMinifier.cs" />
@@ -72,6 +79,9 @@
     <None Include="Package\Package.Template.xml">
       <DependentUpon>Package.package</DependentUpon>
     </None>
+    <None Include="SafeControlModule\SharePointProjectItem.spdata">
+      <SharePointProjectItemId>{9bf71af0-1ef2-49df-b268-4b0ff9aae535}</SharePointProjectItemId>
+    </None>
     <None Include="SPMinEventReceiver\SharePointProjectItem.spdata">
       <SharePointProjectItemId>{a9e5767c-1b44-4ee0-a356-690896a7613c}</SharePointProjectItemId>
     </None>
@@ -81,6 +91,7 @@
     <Content Include="Features\SPMin\SPMin.Template.xml">
       <DependentUpon>SPMin.feature</DependentUpon>
     </Content>
+    <Content Include="SafeControlModule\Elements.xml" />
     <Content Include="SPMinEventReceiver\Elements.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
