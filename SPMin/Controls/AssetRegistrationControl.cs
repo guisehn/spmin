@@ -2,7 +2,10 @@
 using System;
 using System.ComponentModel;
 using System.IO;
+using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
+using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
@@ -33,13 +36,39 @@ namespace SPMin.Controls
                     filePath = Regex.Replace(filePath, "([^/]+)$", fileNameParser.MinifiedVersionFileName);
             }
 
-            return filePath;
+            return String.Format("{0}/Style Library/{1}", SPContext.Current.Web.ServerRelativeUrl, filePath);
         }
 
         protected override void RenderContents(HtmlTextWriter output)
         {
             Environment environment = EnvironmentDetector.Detect(SPContext.Current.Site);
-            output.Write(GenerateHtml(environment));
+            var html = new StringBuilder();
+
+            if (environment == Environment.Development)
+            {
+                SPWeb web = SPContext.Current.Site.RootWeb;
+                string fileUrl = String.Format("{0}/Style Library/{1}", web.ServerRelativeUrl, FilePath);
+                string[] fileParts = fileUrl.Split('/');
+                string fileDirectory = String.Join("/", fileParts.Take(fileParts.Length - 1).ToArray());
+
+                try
+                {
+                    SPFile file = web.GetFile(fileUrl);
+                    var reader = new FileReader(file);
+
+                    foreach (string includedFile in reader.IncludedFiles)
+                        html.AppendLine(GenerateHtml(fileDirectory + "/" + includedFile));
+                }
+                catch (SPException)
+                {
+                    html.AppendLine("<!-- SPMin: " + HttpUtility.HtmlEncode(fileUrl) + " not found -->");
+                }
+            }
+
+            string finalFilePath = GetFinalPath(environment);
+            html.AppendLine(GenerateHtml(finalFilePath));
+
+            output.Write(html.ToString());
         }
 
         public override void RenderBeginTag(HtmlTextWriter writer)
@@ -52,7 +81,7 @@ namespace SPMin.Controls
             writer.Write("");
         }
 
-        public virtual string GenerateHtml(Environment environment)
+        public virtual string GenerateHtml(string path)
         {
             throw new NotImplementedException();
         }

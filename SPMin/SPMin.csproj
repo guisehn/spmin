@@ -60,8 +60,10 @@
     <Compile Include="Controls\JsRegistration.cs" />
     <Compile Include="Environment.cs" />
     <Compile Include="EnvironmentDetector.cs" />
+    <Compile Include="FileContentParser.cs" />
     <Compile Include="FileNameParser.cs" />
     <Compile Include="FileMinifier.cs" />
+    <Compile Include="FileReader.cs" />
     <Compile Include="Minifiers\CssMinifier.cs" />
     <Compile Include="Minifiers\IMinifier.cs" />
     <Compile Include="Minifiers\JavaScriptMinifier.cs" />

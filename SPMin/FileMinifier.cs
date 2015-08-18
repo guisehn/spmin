@@ -13,16 +13,13 @@ namespace SPMin
         private string fileExtension;
         private string content;
 
-        public FileMinifier(string fileExtension, Stream stream)
+        public FileMinifier(string fileExtension, string content)
         {
             this.fileExtension = fileExtension;
             if (Minifier == null)
                 throw new Exception(String.Format("No minifier found for {0} extension", fileExtension));
 
-            using (var reader = new StreamReader(stream))
-            {
-                content = reader.ReadToEnd();
-            }
+            this.content = content;
         }
 
         private IMinifier Minifier

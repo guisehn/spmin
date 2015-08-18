@@ -9,14 +9,10 @@ namespace SPMin.Controls
     [ToolboxData("<{0}:CssRegistration runat=server></{0}:CssRegistration>")]
     public class CssRegistration : AssetRegistrationControl
     {
-        public override string GenerateHtml(Environment environment)
+        public override string GenerateHtml(string path)
         {
-            string finalFilePath = GetFinalPath(environment);
-
-            var html = String.Format("<link rel='stylesheet' href='{0}' type='text/css' />",
-                HttpUtility.HtmlEncode(finalFilePath));
-
-            return html;
+            return String.Format("<link rel='stylesheet' href='{0}' type='text/css' />",
+                HttpUtility.HtmlEncode(path));
         }
     }
 }

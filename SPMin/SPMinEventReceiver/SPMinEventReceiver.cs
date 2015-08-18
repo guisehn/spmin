@@ -94,26 +94,25 @@ namespace SPMin.SPMinEventReceiver
 
             RunForMainFile(properties, (fileNameParser, mainFile, minifiedFile) =>
             {
-                using (var stream = mainFile.OpenBinaryStream())
+                var reader = new FileReader(mainFile);
+                var content = reader.GetCompiledContent();
+                var minifier = new FileMinifier(fileNameParser.FileExtension, content);
+
+                if (minifiedFile != null)
                 {
-                    var minifier = new FileMinifier(fileNameParser.FileExtension, stream);
+                    if (minifiedFile.CheckedOutByUser == null)
+                        minifiedFile.CheckOut();
 
-                    if (minifiedFile != null)
-                    {
-                        if (minifiedFile.CheckedOutByUser == null)
-                            minifiedFile.CheckOut();
-
-                        minifiedFile.SaveBinary(minifier.MinifyAsByteArray());
-                    }
-                    else
-                    {
-                        SPFolder folder = mainFile.ParentFolder;
-                        string fileUrl = String.Format("{0}/{1}", folder.Url, fileNameParser.MinifiedVersionFileName);
-                        minifiedFile = folder.Files.Add(fileUrl, minifier.MinifyAsByteArray());
-                    }
-
-                    returnValue = minifiedFile;
+                    minifiedFile.SaveBinary(minifier.MinifyAsByteArray());
                 }
+                else
+                {
+                    SPFolder folder = mainFile.ParentFolder;
+                    string fileUrl = String.Format("{0}/{1}", folder.Url, fileNameParser.MinifiedVersionFileName);
+                    minifiedFile = folder.Files.Add(fileUrl, minifier.MinifyAsByteArray());
+                }
+
+                returnValue = minifiedFile;
             });
 
             return returnValue;

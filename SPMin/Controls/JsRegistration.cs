@@ -9,14 +9,10 @@ namespace SPMin.Controls
     [ToolboxData("<{0}:JsRegistration runat=server></{0}:JsRegistration>")]
     public class JsRegistration : AssetRegistrationControl
     {
-        public override string GenerateHtml(Environment environment)
+        public override string GenerateHtml(string path)
         {
-            string finalFilePath = GetFinalPath(environment);
-
-            var html = String.Format("<script src='{0}' type='text/javascript'></script>",
-                HttpUtility.HtmlEncode(finalFilePath));
-
-            return html;
+            return String.Format("<script src='{0}' type='text/javascript'></script>",
+                HttpUtility.HtmlEncode(path));
         }
     }
 }
