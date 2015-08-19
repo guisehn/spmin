@@ -39,7 +39,7 @@ namespace SPMin.Controls
                 }
             }
 
-            path = String.Format("{0}/Style Library/{1}", SPContext.Current.Web.ServerRelativeUrl, path);
+            path = String.Format("{0}/Style Library/{1}", SPContext.Current.Site.RootWeb.ServerRelativeUrl, path);
             path = FileUtilities.RemoveDuplicatedSlashesFromPath(path);
 
             return path;
