@@ -64,6 +64,7 @@
     <Compile Include="FileNameParser.cs" />
     <Compile Include="FileMinifier.cs" />
     <Compile Include="FileReader.cs" />
+    <Compile Include="FileUtilities.cs" />
     <Compile Include="Minifiers\CssMinifier.cs" />
     <Compile Include="Minifiers\IMinifier.cs" />
     <Compile Include="Minifiers\JavaScriptMinifier.cs" />

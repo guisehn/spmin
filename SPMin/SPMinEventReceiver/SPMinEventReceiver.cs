@@ -118,11 +118,6 @@ namespace SPMin.SPMinEventReceiver
             return returnValue;
         }
 
-        private SPFile GetFile(SPFolder folder, string fileName)
-        {
-            return folder.Files.OfType<SPFile>().FirstOrDefault(f => f.Name == fileName);
-        }
-
         private void RunForMainFile(SPItemEventProperties properties, Action<FileNameParser, SPFile, SPFile> action)
         {
             SPListItem item = properties.ListItem;
@@ -132,7 +127,7 @@ namespace SPMin.SPMinEventReceiver
             var fileNameParser = new FileNameParser(item.File.Name);
             if (fileNameParser.ShouldBeMinified)
             {
-                SPFile minifiedFile = GetFile(item.File.ParentFolder, fileNameParser.MinifiedVersionFileName);
+                SPFile minifiedFile = FileUtilities.GetFile(item.File.ParentFolder, fileNameParser.MinifiedVersionFileName);
                 action(fileNameParser, item.File, minifiedFile);
             }
         }

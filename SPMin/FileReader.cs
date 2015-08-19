@@ -27,9 +27,9 @@ namespace SPMin
 
             foreach (string includedFileName in this.IncludedFiles)
             {
-                SPFile includedFile = GetFile(includedFileName);
+                SPFile includedFile = FileUtilities.GetFile(parentFolder, includedFileName);
 
-                if (includedFile != null)
+                if (includedFile != null && includedFile.Exists)
                     finalContent.AppendLine(GetContent(includedFile));
             }
 
@@ -41,11 +41,6 @@ namespace SPMin
         private string GetContent(SPFile file)
         {
             return Encoding.UTF8.GetString(RemoveBOM(file.OpenBinary()));
-        }
-
-        private SPFile GetFile(string fileName)
-        {
-            return parentFolder.Files.OfType<SPFile>().FirstOrDefault(f => f.Name == fileName);
         }
 
         private byte[] RemoveBOM(byte[] bytes)
