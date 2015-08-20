@@ -66,7 +66,9 @@ Everytime `app.spm.js` is updated, it will regenerate `app.spm.min.js` with the 
 
 When the environment mode is set to development and you add a `JsRegistration` control pointing to your combined JavaScript file, it will generate one script tag for each included file. So this example:
 
-`<SPMin:JsRegistration FilePath="path/to/app.spm.js" runat="server" />`
+```asp
+<SPMin:JsRegistration FilePath="path/to/app.spm.js" runat="server" />
+```
 
 Generates this HTML:
 
