@@ -58,8 +58,11 @@
     <Compile Include="Controls\AssetRegistrationControl.cs" />
     <Compile Include="Controls\CssRegistration.cs" />
     <Compile Include="Controls\JsRegistration.cs" />
+    <Compile Include="EnvironmentMode.cs" />
     <Compile Include="Environment.cs" />
-    <Compile Include="EnvironmentDetector.cs" />
+    <Compile Include="Features\SPMin\SPMin.EventReceiver.cs">
+      <DependentUpon>SPMin.feature</DependentUpon>
+    </Compile>
     <Compile Include="FileContentParser.cs" />
     <Compile Include="FileNameParser.cs" />
     <Compile Include="FileMinifier.cs" />

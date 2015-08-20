@@ -23,11 +23,11 @@ namespace SPMin.Controls
             set { ViewState["FilePath"] = value; }
         }
 
-        protected string GetFinalPath(Environment environment)
+        protected string GetFinalPath(EnvironmentMode environment)
         {
             string path = FilePath;
 
-            if (environment == Environment.Production)
+            if (environment == EnvironmentMode.Production)
             {
                 string fileName = Path.GetFileName(FilePath);
                 var fileNameParser = new FileNameParser(fileName);
@@ -47,10 +47,10 @@ namespace SPMin.Controls
 
         protected override void RenderContents(HtmlTextWriter output)
         {
-            Environment environment = EnvironmentDetector.Detect(SPContext.Current.Site);
+            EnvironmentMode environment = new Environment(SPContext.Current.Site).Mode;
             var html = new StringBuilder();
 
-            if (environment == Environment.Development)
+            if (environment == EnvironmentMode.Development)
                 GenerateIncludeScriptTags(html);
 
             string finalFilePath = GetFinalPath(environment);
