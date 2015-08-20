@@ -12,7 +12,7 @@ This means that you can apply this solution into your project without any impact
 For each of these files, it will create a `.spm.min.js` or `.spm.min.css` correspondent one with the minified code. Operations
 such as editing, checking-out/checking-in and deleting are synchronized for the minified file.
 
-## Including assets in your page
+### Including assets in your page
 SPMin includes special controls that allow you to include the original assets in your development environment and use the minified version in the production environment, without having to write different code for each environment.
 
 In order to use them, first you need to include the following directive at the top of your file:
@@ -44,7 +44,7 @@ For the production environment, the minified version would have been printed:
 ```
 Of course you can also include the assets in your page using HTML script/link tags or ScriptLink/CssRegistration controls just like you would do with normal assets. However, by using this you can't easily include different versions of the file for each environment.
 
-## Combining assets
+### Combining assets
 
 You can tell SPMin to combine different assets inside one file in order to reduce the number of HTTP requests in the prodution environment and thus improve the client-side loading performance. It works similarly to [Ruby on Rails's asset pipeline](https://github.com/rails/sprockets).
 
@@ -84,6 +84,29 @@ In the production environment, it will generate the following HTML:
 ```
 
 This also works for CSS files.
+
+### Setting the environment mode
+
+The environment mode can be set either by using SharePoint Designer or the SharePoint Management Shell.
+
+#### Using SharePoint Designer
+
+1. Open the root site of your site collection in SharePoint Designer.
+2. Click in the *Site Options* icon on the ribbon.
+3. Select the parameter named "SPMinEnvironment" and click in *Modify*.
+4. Change its value to "Development" or "Production" and click *OK*.
+5. Click *OK* in the site options window to apply the changes.
+
+#### Using SharePoint Management Shell
+
+Open it and run the following commands:
+
+```powershell
+$site = Get-SPSite http://site-collection-url/
+$web = $site.RootWeb
+$web.AllProperties["SPMinEnvironment"] = "Production" # or "Development"
+$web.Update()
+```
 
 ## How to install
 SPMin is a farm solution so it will work only in on-premises SharePoint environments. The install instructions are detailed in the [release page](https://github.com/ghsehn/SPMin/releases/latest).
