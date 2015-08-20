@@ -46,7 +46,44 @@ Of course you can also include the assets in your page using HTML script/link ta
 
 ## Combining assets
 
-Coming soon. :)
+You can tell SPMin to combine different assets inside one file in order to reduce the number of HTTP requests in the prodution environment and thus improve the client-side loading performance. It works similarly to [Ruby on Rails's asset pipeline](https://github.com/rails/sprockets).
+
+To do this, create a file in the Style Library that ends with `.spm.js` (for example `app.spm.js`) and add a comment at the top of it that specifices the files to be included in the following format:
+
+```javascript
+/**
+ *= file1.js
+ *= file2.js
+ *= file3.js
+ */
+```
+
+You can also add more code into this file, but the comment with the included files must be at the top of it.
+
+This will tell SPMin to include the contents of `file1.js`, `file2.js` and `file3.js` at the beginning of `app.spm.js`. The included files must be in the same folder of your main file.
+
+Everytime `app.spm.js` is updated, it will regenerate `app.spm.min.js` with the minified combined files. **Important:** if you update `file1.js` alone, it will not regenerate `app.spm.min.js`. You need to manually re-save `app.spm.js` in order to trigger the combination and minification again.
+
+When the environment mode is set to development and you add a `JsRegistration` control pointing to your combined JavaScript file, it will generate one script tag for each included file. So this example:
+
+`<SPMin:JsRegistration FilePath="path/to/app.spm.js" runat="server" />`
+
+Generates this HTML:
+
+```html
+<script src='/sites/site-collection/Style Library/path/to/file1.js' type='text/javascript'></script>
+<script src='/sites/site-collection/Style Library/path/to/file2.js' type='text/javascript'></script>
+<script src='/sites/site-collection/Style Library/path/to/file3.js' type='text/javascript'></script>
+<script src='/sites/site-collection/Style Library/path/to/app.spm.js' type='text/javascript'></script>
+```
+
+In the production environment, it will generate the following HTML:
+
+```html
+<script src='/sites/site-collection/Style Library/path/to/app.spm.min.js' type='text/javascript'></script>
+```
+
+This also works for CSS files.
 
 ## How to install
 SPMin is a farm solution so it will work only in on-premises SharePoint environments. The install instructions are detailed in the [release page](https://github.com/ghsehn/SPMin/releases/latest).
