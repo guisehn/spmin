@@ -2,4 +2,5 @@ SPMin/bin
 SPMin/obj
 SPMin/pkg
 SPMin/pkgobj
+*.csproj.user
 *.suo
