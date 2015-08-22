@@ -110,5 +110,8 @@ $web.AllProperties["SPMinEnvironment"] = "Production" # or "Development"
 $web.Update()
 ```
 
+#### Previewing production mode
+When the environment mode is set to development, you can add the `?spmin=production` query string to your URL in order to preview how SPMin will render the controls in production mode.
+
 ## How to install
 SPMin is a farm solution so it will work only in on-premises SharePoint environments. The install instructions are detailed in the [release page](https://github.com/ghsehn/SPMin/releases/latest).
