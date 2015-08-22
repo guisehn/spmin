@@ -100,12 +100,12 @@ namespace SPMin.Controls
 
         public override void RenderBeginTag(HtmlTextWriter writer)
         {
-            // This method is overriden to remove WebControl's default <span> container
+            // This method is overridden to remove WebControl's default <span> container
         }
 
         public override void RenderEndTag(HtmlTextWriter writer)
         {
-            // This method is overriden to remove WebControl's default <span> container
+            // This method is overridden to remove WebControl's default <span> container
         }
 
         public virtual string GenerateHtml(string path)
