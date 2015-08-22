@@ -23,11 +23,29 @@ namespace SPMin.Controls
             set { ViewState["FilePath"] = value; }
         }
 
-        protected string GetFinalPath(EnvironmentMode environment)
+        private EnvironmentMode? _environmentMode;
+        private EnvironmentMode EnvironmentMode
+        {
+            get
+            {
+                if (!_environmentMode.HasValue)
+                {
+                    // Emulate production environment while in development environment
+                    if (HttpContext.Current.Request.QueryString["spmin"] == "production")
+                        _environmentMode = EnvironmentMode.Production;
+                    else
+                        _environmentMode = new Environment(SPContext.Current.Site).Mode;
+                }
+
+                return _environmentMode.Value;
+            }
+        }
+
+        protected string GetFinalPath()
         {
             string path = FilePath;
 
-            if (environment == EnvironmentMode.Production)
+            if (EnvironmentMode == EnvironmentMode.Production)
             {
                 string fileName = Path.GetFileName(FilePath);
                 var fileNameParser = new FileNameParser(fileName);
@@ -47,13 +65,12 @@ namespace SPMin.Controls
 
         protected override void RenderContents(HtmlTextWriter output)
         {
-            EnvironmentMode environment = new Environment(SPContext.Current.Site).Mode;
             var html = new StringBuilder();
 
-            if (environment == EnvironmentMode.Development)
+            if (EnvironmentMode == EnvironmentMode.Development)
                 GenerateIncludeScriptTags(html);
 
-            string finalFilePath = GetFinalPath(environment);
+            string finalFilePath = GetFinalPath();
             html.AppendLine(GenerateHtml(finalFilePath));
 
             output.Write(html.ToString());
