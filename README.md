@@ -42,7 +42,8 @@ For the production environment, the minified version would have been printed:
 <link rel='stylesheet' href='/sites/site-collection/Style Library/path/to/stylesheet.spm.min.css' type='text/css' />
 <script src='/sites/site-collection/Style Library/path/to/javascript.spm.min.js' type='text/javascript'></script>
 ```
-Of course you can also include the assets in your page using HTML script/link tags or ScriptLink/CssRegistration controls just like you would do with normal assets. However, by using this you can't easily include different versions of the file for each environment.
+
+These controls will not print duplicated inclusion tags for the same file in the page (it will render only the first one). If you need to include the same JavaScript file or CSS multiple times, add the `IncludeOnce="false"` attribute to the control definition.
 
 ### Combining assets
 
