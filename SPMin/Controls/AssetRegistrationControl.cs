@@ -82,6 +82,17 @@ namespace SPMin.Controls
         }
 
         /// <summary>
+        /// Checks if the control should be rendered
+        /// </summary>
+        protected bool ShouldRender
+        {
+            get
+            {
+                return !IncludeOnce || !AlreadyIncludedInCurrentRequest;
+            }
+        }
+
+        /// <summary>
         /// Gets the final path for the specified asset based on the environment mode
         /// </summary>
         /// <returns>Final path</returns>
@@ -138,10 +149,8 @@ namespace SPMin.Controls
         /// <param name="e"></param>
         protected override void OnPreRender(EventArgs e)
         {
-            if (IncludeOnce && AlreadyIncludedInCurrentRequest)
+            if (!ShouldRender)
                 return;
-
-            MarkAssetAsIncluded();
 
             // Generates separated inclusion tags when in development mode
             if (EnvironmentMode == EnvironmentMode.Development)
@@ -161,6 +170,11 @@ namespace SPMin.Controls
         /// <param name="output">Variable to write the output</param>
         protected override void RenderContents(HtmlTextWriter output)
         {
+            if (!ShouldRender)
+                return;
+
+            MarkAssetAsIncluded();
+
             if (AddToHead)
                 output.Write("<!-- head: {0} -->", HttpUtility.HtmlEncode(FilePath));
             else
