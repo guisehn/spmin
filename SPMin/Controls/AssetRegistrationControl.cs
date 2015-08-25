@@ -187,6 +187,10 @@ namespace SPMin.Controls
         protected void RenderInHead()
         {
             Control control = Page.Controls[0].FindControl("PlaceHolderAdditionalPageHead");
+
+            if (control == null)
+                throw new SPMinException("PlaceHolderAdditionalPageHead not found");
+
             control.Controls.Add(new LiteralControl { Text = html.ToString() });
         }
 

@@ -73,6 +73,7 @@
     <Compile Include="Minifiers\JavaScriptMinifier.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SPMinEventReceiver\SPMinEventReceiver.cs" />
+    <Compile Include="SPMinException.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Features\SPMin\SPMin.feature">
