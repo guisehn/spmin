@@ -43,7 +43,7 @@ For the production environment, the minified version would have been printed:
 <script src='/sites/site-collection/Style Library/path/to/javascript.spm.min.js' type='text/javascript'></script>
 ```
 
-These controls will not print duplicated inclusion tags for the same file in the page (it will render only the first one). If you need to include the same JavaScript file or CSS multiple times, add the `IncludeOnce="false"` attribute to the control definition.
+These controls will not print duplicated inclusion tags for the same file in the page (it will render only the first one). If you need to include the same JavaScript or CSS file multiple times, add the `IncludeOnce="false"` attribute to the subsequent control definition.
 
 ### Combining assets
 
@@ -52,7 +52,7 @@ You can tell SPMin to combine different assets inside one file in order to reduc
 To do this, create a file in the Style Library that ends with `.spm.js` (for example `app.spm.js`) and add a comment at the top of it that specifices the files to be included in the following format:
 
 ```javascript
-/**
+/*
  *= file1.js
  *= file2.js
  *= file3.js
