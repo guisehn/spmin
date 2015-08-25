@@ -13,8 +13,9 @@ namespace SPMin.Controls
 {
     public class AssetRegistrationControl : WebControl
     {
-        private EnvironmentMode? _environmentMode;
+        private EnvironmentMode? _environmentMode = null;
         private bool _includeOnce = true;
+        private StringBuilder html = new StringBuilder();
 
         [Category("Settings")]
         public bool IncludeOnce
@@ -22,6 +23,9 @@ namespace SPMin.Controls
             get { return _includeOnce; }
             set { _includeOnce = value; }
         }
+
+        [Category("Settings")]
+        public virtual bool AddToHead { get; set; }
 
         [Category("Settings")]
         public string FilePath { get; set; }
@@ -106,8 +110,7 @@ namespace SPMin.Controls
         /// <summary>
         /// Generates the HTML for the separated inclusion tags
         /// </summary>
-        /// <param name="html"></param>
-        protected void GenerateSeparatedInclusionTags(StringBuilder html)
+        protected void GenerateSeparatedInclusionTags()
         {
             SPWeb web = SPContext.Current.Site.RootWeb;
 
@@ -130,25 +133,47 @@ namespace SPMin.Controls
         }
 
         /// <summary>
-        /// Renders the generated HTML
+        /// Executes before the control is rendered
         /// </summary>
-        /// <param name="output">Variable to write the output</param>
-        protected override void RenderContents(HtmlTextWriter output)
+        /// <param name="e"></param>
+        protected override void OnPreRender(EventArgs e)
         {
             if (IncludeOnce && AlreadyIncludedInCurrentRequest)
                 return;
 
             MarkAssetAsIncluded();
-            var html = new StringBuilder();
 
             // Generates separated inclusion tags when in development mode
             if (EnvironmentMode == EnvironmentMode.Development)
-                GenerateSeparatedInclusionTags(html);
+                GenerateSeparatedInclusionTags();
 
-            // Prints the asset inclusion tag based on environment mode
+            // Generates the asset inclusion tag based on environment mode
             string finalFilePath = GetFinalPath();
             html.AppendLine(GenerateHtml(finalFilePath));
-            output.Write(html.ToString());
+
+            if (AddToHead)
+                RenderInHead();
+        }
+
+        /// <summary>
+        /// Renders in the place where the control was included
+        /// </summary>
+        /// <param name="output">Variable to write the output</param>
+        protected override void RenderContents(HtmlTextWriter output)
+        {
+            if (AddToHead)
+                output.Write("<!-- head: {0} -->", HttpUtility.HtmlEncode(FilePath));
+            else
+                output.Write(html.ToString());
+        }
+
+        /// <summary>
+        /// Renders the inclusion tag inside the additional page head placeholder
+        /// </summary>
+        protected void RenderInHead()
+        {
+            Control control = Page.Controls[0].FindControl("PlaceHolderAdditionalPageHead");
+            control.Controls.Add(new LiteralControl { Text = html.ToString() });
         }
 
         public override void RenderBeginTag(HtmlTextWriter writer)
