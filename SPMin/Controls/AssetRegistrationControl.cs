@@ -13,17 +13,22 @@ namespace SPMin.Controls
 {
     public class AssetRegistrationControl : WebControl
     {
+        private EnvironmentMode? _environmentMode;
+        private bool _includeOnce = true;
+
         [Category("Settings")]
-        [Bindable(true)]
-        [DefaultValue("")]
-        [Localizable(true)]
-        public string FilePath
+        public bool IncludeOnce
         {
-            get { return Convert.ToString(ViewState["FilePath"]) ?? ""; }
-            set { ViewState["FilePath"] = value; }
+            get { return _includeOnce; }
+            set { _includeOnce = value; }
         }
 
-        private EnvironmentMode? _environmentMode;
+        [Category("Settings")]
+        public string FilePath { get; set; }
+
+        /// <summary>
+        /// Gets the current environment mode
+        /// </summary>
         private EnvironmentMode EnvironmentMode
         {
             get
@@ -41,6 +46,41 @@ namespace SPMin.Controls
             }
         }
 
+        /// <summary>
+        /// The key used to verificate if the selected asset has been already included in the current request
+        /// </summary>
+        private string InclusionVerificationKey
+        {
+            get
+            {
+                return "SPMinIncluded_" + FilePath;
+            }
+        }
+
+        /// <summary>
+        /// Checks if the selected asset has been already included in the current request
+        /// </summary>
+        private bool AlreadyIncludedInCurrentRequest
+        {
+            get
+            {
+                return (HttpContext.Current.Items[InclusionVerificationKey] != null);
+            }
+        }
+
+        /// <summary>
+        /// Marks the selected asset as included for the current request.
+        /// </summary>
+        protected void MarkAssetAsIncluded()
+        {
+            if (!AlreadyIncludedInCurrentRequest)
+                HttpContext.Current.Items[InclusionVerificationKey] = true;
+        }
+
+        /// <summary>
+        /// Gets the final path for the specified asset based on the environment mode
+        /// </summary>
+        /// <returns>Final path</returns>
         protected string GetFinalPath()
         {
             string path = FilePath;
@@ -63,20 +103,11 @@ namespace SPMin.Controls
             return path;
         }
 
-        protected override void RenderContents(HtmlTextWriter output)
-        {
-            var html = new StringBuilder();
-
-            if (EnvironmentMode == EnvironmentMode.Development)
-                GenerateIncludeScriptTags(html);
-
-            string finalFilePath = GetFinalPath();
-            html.AppendLine(GenerateHtml(finalFilePath));
-
-            output.Write(html.ToString());
-        }
-
-        protected void GenerateIncludeScriptTags(StringBuilder html)
+        /// <summary>
+        /// Generates the HTML for the separated inclusion tags
+        /// </summary>
+        /// <param name="html"></param>
+        protected void GenerateSeparatedInclusionTags(StringBuilder html)
         {
             SPWeb web = SPContext.Current.Site.RootWeb;
 
@@ -88,7 +119,7 @@ namespace SPMin.Controls
                 SPFile file = web.GetFile(filePath);
                 var reader = new FileReader(file);
                 string fileDirectory = FileUtilities.GetDirectoryPathFromFilePath(filePath);
-             
+
                 foreach (string includedFile in reader.IncludedFiles)
                     html.AppendLine(GenerateHtml(fileDirectory + "/" + includedFile));
             }
@@ -96,6 +127,28 @@ namespace SPMin.Controls
             {
                 html.AppendLine("<!-- SPMin: " + HttpUtility.HtmlEncode(filePath) + " not found -->");
             }
+        }
+
+        /// <summary>
+        /// Renders the generated HTML
+        /// </summary>
+        /// <param name="output">Variable to write the output</param>
+        protected override void RenderContents(HtmlTextWriter output)
+        {
+            if (IncludeOnce && AlreadyIncludedInCurrentRequest)
+                return;
+
+            MarkAssetAsIncluded();
+            var html = new StringBuilder();
+
+            // Generates separated inclusion tags when in development mode
+            if (EnvironmentMode == EnvironmentMode.Development)
+                GenerateSeparatedInclusionTags(html);
+
+            // Prints the asset inclusion tag based on environment mode
+            string finalFilePath = GetFinalPath();
+            html.AppendLine(GenerateHtml(finalFilePath));
+            output.Write(html.ToString());
         }
 
         public override void RenderBeginTag(HtmlTextWriter writer)
