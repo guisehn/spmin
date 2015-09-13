@@ -139,11 +139,11 @@ namespace SPMin.SPMinEventReceiver
         {
             var rootFolder = list.RootFolder;
             SPFolder folder = rootFolder.SubFolders.OfType<SPFolder>()
-                .Where(f => f.Name.Equals("spmin", StringComparison.InvariantCultureIgnoreCase))
+                .Where(f => f.Name.Equals(Constants.SPMinFolderName, StringComparison.InvariantCultureIgnoreCase))
                 .FirstOrDefault();
 
             if (folder == null)
-                folder = rootFolder.SubFolders.Add("spmin");
+                folder = rootFolder.SubFolders.Add(Constants.SPMinFolderName);
 
             return folder;
         }

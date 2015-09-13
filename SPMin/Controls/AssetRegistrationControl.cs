@@ -104,7 +104,7 @@ namespace SPMin.Controls
             {
                 var fileNameParser = new FileNameParser(path);
                 if (fileNameParser.ShouldBeMinified)
-                    path = String.Format("spmin/{0}", fileNameParser.MinifiedVersionFileName);
+                    path = String.Format("{0}/{1}", Constants.SPMinFolderName, fileNameParser.MinifiedVersionFileName);
             }
 
             path = String.Format("{0}/Style Library/{1}", SPContext.Current.Site.RootWeb.ServerRelativeUrl, path);
