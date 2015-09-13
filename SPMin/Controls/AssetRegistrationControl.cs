@@ -68,7 +68,7 @@ namespace SPMin.Controls
         {
             get
             {
-                return (HttpContext.Current.Items[InclusionVerificationKey] != null);
+                return HttpContext.Current.Items[InclusionVerificationKey] != null;
             }
         }
 
@@ -102,14 +102,9 @@ namespace SPMin.Controls
 
             if (EnvironmentMode == EnvironmentMode.Production)
             {
-                string fileName = Path.GetFileName(FilePath);
-                var fileNameParser = new FileNameParser(fileName);
-
+                var fileNameParser = new FileNameParser(path);
                 if (fileNameParser.ShouldBeMinified)
-                {
-                    string directoryPath = FileUtilities.GetDirectoryPathFromFilePath(path);
-                    path = String.Format("{0}/{1}", directoryPath, fileNameParser.MinifiedVersionFileName);
-                }
+                    path = String.Format("spmin/{0}", fileNameParser.MinifiedVersionFileName);
             }
 
             path = String.Format("{0}/Style Library/{1}", SPContext.Current.Site.RootWeb.ServerRelativeUrl, path);

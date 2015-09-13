@@ -9,17 +9,16 @@ namespace SPMin
     public class FileNameParser
     {
         private const string FileNameSuffix = ".spm";
-        private const string MinifiedFileNameSuffix = ".min";
-        private readonly Regex FileNameSuffixRegex = new Regex("^(.*?)" + Regex.Escape(FileNameSuffix) + @"\.(js|css)$",
+        private readonly Regex FileNameSuffixRegex = new Regex("^(.*?)/([^/]+)" + Regex.Escape(FileNameSuffix) + @"\.(js|css)$",
             RegexOptions.Compiled);
 
-        private string fileName;
+        private string filePath;
         private Match match;
 
-        public FileNameParser(string fileName)
+        public FileNameParser(string filePath)
         {
-            this.fileName = fileName;
-            this.match = FileNameSuffixRegex.Match(fileName);
+            this.filePath = filePath;
+            this.match = FileNameSuffixRegex.Match(filePath);
         }
 
         public bool ShouldBeMinified
@@ -30,7 +29,7 @@ namespace SPMin
             }
         }
 
-        public string FileNamePrefix
+        public string FileDirectory
         {
             get
             {
@@ -38,7 +37,7 @@ namespace SPMin
             }
         }
 
-        public string FileExtension
+        public string FileNamePrefix
         {
             get
             {
@@ -46,11 +45,20 @@ namespace SPMin
             }
         }
 
+        public string FileExtension
+        {
+            get
+            {
+                return match.Groups[3].Value;
+            }
+        }
+
         public string MinifiedVersionFileName
         {
             get
             {
-                return String.Format("{0}{1}{2}.{3}", FileNamePrefix, FileNameSuffix, MinifiedFileNameSuffix, FileExtension);
+                return String.Format("{0}-{1}.{2}", FileDirectory.Trim('/').Replace('/', '-'),
+                    FileNamePrefix, FileExtension);
             }
         }
     }

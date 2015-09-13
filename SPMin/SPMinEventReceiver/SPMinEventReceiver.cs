@@ -53,7 +53,7 @@ namespace SPMin.SPMinEventReceiver
         {
             base.ItemCheckedOut(properties);
 
-            RunForMainFile(properties, (fileNameParser, mainFile, minifiedFile) =>
+            RunForMainFile(properties, (fileNameParser, targetFolder, mainFile, minifiedFile) =>
             {
                 if (minifiedFile != null && minifiedFile.CheckedOutByUser == null)
                     minifiedFile.CheckOut();
@@ -67,7 +67,7 @@ namespace SPMin.SPMinEventReceiver
         {
             base.ItemDeleting(properties);
 
-            RunForMainFile(properties, (fileNameParser, mainFile, minifiedFile) =>
+            RunForMainFile(properties, (fileNameParser, targetFolder, mainFile, minifiedFile) =>
             {
                 if (minifiedFile != null)
                     minifiedFile.Recycle();
@@ -81,7 +81,7 @@ namespace SPMin.SPMinEventReceiver
         {
             base.ItemUncheckedOut(properties);
 
-            RunForMainFile(properties, (fileNameParser, mainFile, minifiedFile) =>
+            RunForMainFile(properties, (fileNameParser, targetFolder, mainFile, minifiedFile) =>
             {
                 if (minifiedFile != null && minifiedFile.CheckedOutByUser.ID == properties.Web.CurrentUser.ID)
                     minifiedFile.UndoCheckOut();
@@ -92,7 +92,7 @@ namespace SPMin.SPMinEventReceiver
         {
             SPFile returnValue = null;
 
-            RunForMainFile(properties, (fileNameParser, mainFile, minifiedFile) =>
+            RunForMainFile(properties, (fileNameParser, targetFolder, mainFile, minifiedFile) =>
             {
                 var reader = new FileReader(mainFile);
                 var content = reader.GetCompiledContent();
@@ -107,9 +107,8 @@ namespace SPMin.SPMinEventReceiver
                 }
                 else
                 {
-                    SPFolder folder = mainFile.ParentFolder;
-                    string fileUrl = String.Format("{0}/{1}", folder.Url, fileNameParser.MinifiedVersionFileName);
-                    minifiedFile = folder.Files.Add(fileUrl, minifier.MinifyAsByteArray());
+                    string fileUrl = String.Format("{0}/{1}", targetFolder.Url, fileNameParser.MinifiedVersionFileName);
+                    minifiedFile = targetFolder.Files.Add(fileUrl, minifier.MinifyAsByteArray());
                 }
 
                 returnValue = minifiedFile;
@@ -118,18 +117,35 @@ namespace SPMin.SPMinEventReceiver
             return returnValue;
         }
 
-        private void RunForMainFile(SPItemEventProperties properties, Action<FileNameParser, SPFile, SPFile> action)
+        private void RunForMainFile(SPItemEventProperties properties, Action<FileNameParser, SPFolder, SPFile, SPFile> action)
         {
             SPListItem item = properties.ListItem;
             if (item.Folder != null)
                 return;
 
-            var fileNameParser = new FileNameParser(item.File.Name);
+            var url = FileUtilities.RemoveStyleLibraryFromPath(item.File.Url);
+            var fileNameParser = new FileNameParser(url);
+            SPList styleLibrary = properties.ListItem.ParentList;
+            SPFolder spminFolder = EnsureSPMinFolder(styleLibrary);
+
             if (fileNameParser.ShouldBeMinified)
             {
-                SPFile minifiedFile = FileUtilities.GetFile(item.File.ParentFolder, fileNameParser.MinifiedVersionFileName);
-                action(fileNameParser, item.File, minifiedFile);
+                SPFile minifiedFile = FileUtilities.GetFile(spminFolder, fileNameParser.MinifiedVersionFileName);
+                action(fileNameParser, spminFolder, item.File, minifiedFile);
             }
+        }
+
+        private SPFolder EnsureSPMinFolder(SPList list)
+        {
+            var rootFolder = list.RootFolder;
+            SPFolder folder = rootFolder.SubFolders.OfType<SPFolder>()
+                .Where(f => f.Name.Equals("spmin", StringComparison.InvariantCultureIgnoreCase))
+                .FirstOrDefault();
+
+            if (folder == null)
+                folder = rootFolder.SubFolders.Add("spmin");
+
+            return folder;
         }
     }
 }

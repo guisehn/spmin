@@ -9,6 +9,16 @@ namespace SPMin
 {
     public class FileUtilities
     {
+        private const string StyleLibraryPath = "Style Library/";
+
+        public static string RemoveStyleLibraryFromPath(string path)
+        {
+            if (path.StartsWith(StyleLibraryPath))
+                path = path.Substring(StyleLibraryPath.Length);
+
+            return path;
+        }
+
         public static string RemoveDuplicatedSlashesFromPath(string path)
         {
             return Regex.Replace(path, "/{2,}", "/");
