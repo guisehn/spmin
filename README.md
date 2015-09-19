@@ -63,7 +63,7 @@ You can also add more code into this file, but the comment with the included fil
 
 This will tell SPMin to include the contents of `file1.js`, `file2.js` and `file3.js` at the beginning of `app.spm.js`. The included files must be in the same folder of your main file.
 
-Everytime `app.spm.js` is updated, it will regenerate the minified/combined file. **Important:** if you update `file1.js` alone, it will not regenerate `app.spm.min.js`. You need to manually re-save `app.spm.js` in order to trigger the combination and minification again.
+Everytime `app.spm.js` is updated, it will regenerate the minified/combined file. **Important:** if you update `file1.js` alone, it will not regenerate the minified file. You need to manually re-save `app.spm.js` in order to trigger the combination and minification again.
 
 When the environment mode is set to development and you add a `JsRegistration` control pointing to your combined JavaScript file, it will generate one script tag for each included file. So this example:
 
