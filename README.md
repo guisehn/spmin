@@ -9,8 +9,8 @@ Style Library. It can also combine multiple files into one to minimize the numbe
 SPMin will create a minified version for the files whose names end with `.spm.js` or `.spm.css` in the Style Library.
 This means that you can apply this solution into your project without any impact to existing assets.
 
-For each of these files, it will create a `.spm.min.js` or `.spm.min.css` correspondent one with the minified code. Operations
-such as editing, checking-out/checking-in and deleting are synchronized for the minified file.
+For each of these files, it will create a minified correspondent one in the `spmin` folder with the minified code. Operations
+such as editing, checking-out/checking-in and deleting are synchronized for the minified files.
 
 ### Including assets in your page
 SPMin includes special controls that allow you to include the original assets in your development environment and use the minified version in the production environment, without having to write different code for each environment.
@@ -39,8 +39,8 @@ The path must be always relative to the `Style Library` library of the current s
 For the production environment, the minified version would have been printed:
 
 ```html
-<link rel='stylesheet' href='/sites/site-collection/Style Library/path/to/stylesheet.spm.min.css' type='text/css' />
-<script src='/sites/site-collection/Style Library/path/to/javascript.spm.min.js' type='text/javascript'></script>
+<link rel='stylesheet' href='/sites/site-collection/Style Library/spmin/path-to-stylesheet.css' type='text/css' />
+<script src='/sites/site-collection/Style Library/spmin/path-to-javascript.min.js' type='text/javascript'></script>
 ```
 
 These controls will not print duplicated inclusion tags for the same file in the page (it will render only the first one). If you need to include the same JavaScript or CSS file multiple times, add the `IncludeOnce="false"` attribute to the subsequent control definition.
@@ -63,7 +63,7 @@ You can also add more code into this file, but the comment with the included fil
 
 This will tell SPMin to include the contents of `file1.js`, `file2.js` and `file3.js` at the beginning of `app.spm.js`. The included files must be in the same folder of your main file.
 
-Everytime `app.spm.js` is updated, it will regenerate `app.spm.min.js` with the minified combined files. **Important:** if you update `file1.js` alone, it will not regenerate `app.spm.min.js`. You need to manually re-save `app.spm.js` in order to trigger the combination and minification again.
+Everytime `app.spm.js` is updated, it will regenerate the minified/combined file. **Important:** if you update `file1.js` alone, it will not regenerate `app.spm.min.js`. You need to manually re-save `app.spm.js` in order to trigger the combination and minification again.
 
 When the environment mode is set to development and you add a `JsRegistration` control pointing to your combined JavaScript file, it will generate one script tag for each included file. So this example:
 
@@ -83,7 +83,7 @@ Generates this HTML:
 In the production environment, it will generate the following HTML:
 
 ```html
-<script src='/sites/site-collection/Style Library/path/to/app.spm.min.js' type='text/javascript'></script>
+<script src='/sites/site-collection/Style Library/path-to-app.js' type='text/javascript'></script>
 ```
 
 This also works for CSS files.
