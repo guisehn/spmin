@@ -109,6 +109,7 @@ $site = Get-SPSite http://site-collection-url/
 $web = $site.RootWeb
 $web.AllProperties["SPMinEnvironment"] = "Production" # or "Development"
 $web.Update()
+$site.Dispose()
 ```
 
 #### Previewing production mode
