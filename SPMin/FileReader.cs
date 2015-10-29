@@ -1,6 +1,7 @@
 ﻿using Microsoft.SharePoint;
 using System.Linq;
 using System.Text;
+using System;
 
 namespace SPMin
 {
@@ -30,10 +31,10 @@ namespace SPMin
                 SPFile includedFile = FileUtilities.GetFile(parentFolder, includedFileName);
 
                 if (includedFile != null && includedFile.Exists)
-                    finalContent.AppendLine(GetContent(includedFile));
+                    finalContent.AppendLine(GetContent(includedFile) + FileSeparator);
             }
 
-            finalContent.Append(mainContent);
+            finalContent.AppendLine(mainContent);
 
             return finalContent.ToString();
         }
@@ -51,6 +52,14 @@ namespace SPMin
                 bytes = bytes.Skip(preamble.Length).ToArray();
 
             return bytes;
+        }
+
+        private string FileSeparator
+        {
+            get
+            {
+                return (mainFile.Name.EndsWith(".js", StringComparison.InvariantCultureIgnoreCase)) ? ";" : "";
+            }
         }
     }
 }
