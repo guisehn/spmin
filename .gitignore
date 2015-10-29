@@ -2,5 +2,8 @@ SPMin/bin
 SPMin/obj
 SPMin/pkg
 SPMin/pkgobj
-*.csproj.user
+_ReSharper.*
+*.vssscc
+*.csproj.*
+*.sln.*
 *.suo
