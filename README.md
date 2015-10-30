@@ -30,7 +30,7 @@ Then, you can add the `CssRegistration` control to include a CSS file and the `J
 ```
 
 The path must be always relative to the `Style Library` library of the current site collection. So, in the development environment, the following HTML would have been generated for the above example:
-
+.
 ```html
 <link rel='stylesheet' href='/sites/site-collection/Style Library/path/to/stylesheet.spm.css' type='text/css' />
 <script src='/sites/site-collection/Style Library/path/to/javascript.spm.js' type='text/javascript'></script>
@@ -39,8 +39,8 @@ The path must be always relative to the `Style Library` library of the current s
 For the production environment, the minified version would have been printed:
 
 ```html
-<link rel='stylesheet' href='/sites/site-collection/Style Library/spmin/path-to-stylesheet.css' type='text/css' />
-<script src='/sites/site-collection/Style Library/spmin/path-to-javascript.min.js' type='text/javascript'></script>
+<link rel='stylesheet' href='/sites/site-collection/Style Library/spmin/path-to-stylesheet-a1d0c6e83f027327d8461063f4ac58a6.css' type='text/css' />
+<script src='/sites/site-collection/Style Library/spmin/path-to-javascript-50585be4e3159a71c874c590d2ba12ec.js' type='text/javascript'></script>
 ```
 
 These controls will not print duplicated inclusion tags for the same file in the page (it will render only the first one). If you need to include the same JavaScript or CSS file multiple times, add the `IncludeOnce="false"` attribute to the subsequent control definition.
