@@ -83,7 +83,7 @@ Generates this HTML:
 In the production environment, it will generate the following HTML:
 
 ```html
-<script src='/sites/site-collection/Style Library/path-to-app.js' type='text/javascript'></script>
+<script src='/sites/site-collection/Style Library/path-to-app-97a09effc0f30fd401372dce6c3a64c6.js' type='text/javascript'></script>
 ```
 
 This also works for CSS files.
