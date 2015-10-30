@@ -9,7 +9,7 @@ Style Library. It can also combine multiple files into one to minimize the numbe
 SPMin will create a minified version for the files whose names end with `.spm.js` or `.spm.css` in the Style Library.
 This means that you can apply this solution into your project without any impact to existing assets.
 
-For each of these files, it will create a minified correspondent one in the `spmin` folder with the minified code. Operations
+For each of these files, it will create a correspondent one in the `spmin` folder with the minified code. Operations
 such as editing, checking-out/checking-in and deleting are synchronized for the minified files.
 
 ### Including assets in your page
