@@ -11,7 +11,7 @@ using System.Web.UI.WebControls;
 
 namespace SPMin.Controls
 {
-    public class AssetRegistrationControl : WebControl
+    public abstract class AssetRegistrationControl : WebControl
     {
         private EnvironmentMode? _environmentMode = null;
         private bool _includeOnce = true;
