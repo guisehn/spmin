@@ -4,15 +4,6 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SPMin", "SPMin\SPMin.csproj", "{F016C74F-9AB7-4B38-98D7-FF71D9A1B613}"
 EndProject
 Global
-	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 2
-		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
-		SccTeamFoundationServer = http://tfsconectt.conectt.com.br:8080/
-		SccLocalPath0 = .
-		SccProjectUniqueName1 = SPMin\\SPMin.csproj
-		SccProjectName1 = SPMin
-		SccLocalPath1 = SPMin
-	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
