@@ -103,8 +103,15 @@ namespace SPMin.Controls
             if (EnvironmentMode == EnvironmentMode.Production)
             {
                 var fileNameParser = new FileNameParser(path);
+
                 if (fileNameParser.ShouldBeMinified)
-                    path = String.Format("{0}/{1}", Constants.SPMinFolderName, fileNameParser.MinifiedVersionFileName);
+                {
+                    var fileHashDictionary = new FileHashDictionary(SPContext.Current.Site);
+                    var fileHash = fileHashDictionary[path];
+                    var minifiedFileName = fileNameParser.GenerateMinifiedVersionFileName(fileHash);
+
+                    path = String.Format("{0}/{1}", Constants.SPMinFolderName, minifiedFileName);
+                }
             }
 
             path = String.Format("{0}/Style Library/{1}", SPContext.Current.Site.RootWeb.ServerRelativeUrl, path);

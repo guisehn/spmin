@@ -53,13 +53,20 @@ namespace SPMin
             }
         }
 
-        public string MinifiedVersionFileName
+        public string FilePath
         {
             get
             {
-                return String.Format("{0}-{1}.{2}", FileDirectory.Trim('/').Replace('/', '-'),
-                    FileNamePrefix, FileExtension);
+                return this.filePath;
             }
+        }
+
+        public string GenerateMinifiedVersionFileName(string fileHash)
+        {
+            string hashSegment = (!String.IsNullOrEmpty(fileHash)) ? '-' + fileHash : "";
+
+            return String.Format("{0}-{1}{2}.{3}", FileDirectory.Trim('/').Replace('/', '-'),
+                FileNamePrefix, hashSegment, FileExtension);
         }
     }
 }

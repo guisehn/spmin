@@ -37,12 +37,7 @@ namespace SPMin.SPMinEventReceiver
                 SPFile minifiedFile = CreateOrUpdateMinifiedFile(properties);
 
                 if (minifiedFile != null)
-                {
-                    CheckInType checkInType = new CheckInTypeDetector(properties).Detect();
-
-                    if (checkInType == CheckInType.MajorVersion)
-                        minifiedFile.CheckIn("", SPCheckinType.MajorCheckIn);
-                }
+                    PerformCheckIn(properties, properties.ListItem.File, minifiedFile);
             }
         }
 
@@ -67,11 +62,20 @@ namespace SPMin.SPMinEventReceiver
         {
             base.ItemDeleting(properties);
 
-            RunForMainFile(properties, (fileNameParser, targetFolder, mainFile, minifiedFile) =>
+            lock (_lock)
             {
-                if (minifiedFile != null)
-                    minifiedFile.Recycle();
-            });
+                RunForMainFile(properties, (fileNameParser, targetFolder, mainFile, minifiedFile) =>
+                {
+                    if (minifiedFile != null)
+                    {
+                        minifiedFile.Delete();
+
+                        var path = FileUtilities.RemoveStyleLibraryFromPath(mainFile.Url);
+                        var fileHashDictionary = new FileHashDictionary(properties.ListItem.Web.Site);
+                        fileHashDictionary.Remove(path);
+                    }
+                });
+            }
         }
 
         /// <summary>
@@ -86,6 +90,24 @@ namespace SPMin.SPMinEventReceiver
                 if (minifiedFile != null && minifiedFile.CheckedOutByUser.ID == properties.Web.CurrentUser.ID)
                     minifiedFile.UndoCheckOut();
             });
+        }
+
+        private void PerformCheckIn(SPItemEventProperties properties, SPFile mainFile, SPFile minifiedFile)
+        {
+            CheckInType checkInType = new CheckInTypeDetector(properties).Detect();
+            if (checkInType != CheckInType.MajorVersion)
+                return;
+
+            var hash = FileUtilities.GetMD5Hash(minifiedFile.OpenBinary());
+            var path = FileUtilities.RemoveStyleLibraryFromPath(mainFile.Url);
+            var fileNameParser = new FileNameParser(path);
+
+            minifiedFile.CheckIn("", SPCheckinType.MajorCheckIn);
+            minifiedFile.Item["Name"] = fileNameParser.GenerateMinifiedVersionFileName(hash);
+            minifiedFile.Item.SystemUpdate();
+
+            var fileHashDictionary = new FileHashDictionary(properties.ListItem.Web.Site);
+            fileHashDictionary.Update(path, hash);
         }
 
         private SPFile CreateOrUpdateMinifiedFile(SPItemEventProperties properties)
@@ -107,7 +129,11 @@ namespace SPMin.SPMinEventReceiver
                 }
                 else
                 {
-                    string fileUrl = String.Format("{0}/{1}", targetFolder.Url, fileNameParser.MinifiedVersionFileName);
+                    var fileHashDictionary = new FileHashDictionary(properties.ListItem.Web.Site);
+                    var fileHash = fileHashDictionary[fileNameParser.FilePath];
+                    var minifiedFileName = fileNameParser.GenerateMinifiedVersionFileName(fileHash);
+
+                    string fileUrl = String.Format("{0}/{1}", targetFolder.Url, minifiedFileName);
                     minifiedFile = targetFolder.Files.Add(fileUrl, minifier.MinifyAsByteArray());
                 }
 
@@ -130,7 +156,10 @@ namespace SPMin.SPMinEventReceiver
 
             if (fileNameParser.ShouldBeMinified)
             {
-                SPFile minifiedFile = FileUtilities.GetFile(spminFolder, fileNameParser.MinifiedVersionFileName);
+                var fileHashDictionary = new FileHashDictionary(properties.ListItem.Web.Site);
+                var fileHash = fileHashDictionary[url];
+
+                SPFile minifiedFile = FileUtilities.GetFile(spminFolder, fileNameParser.GenerateMinifiedVersionFileName(fileHash));
                 action(fileNameParser, spminFolder, item.File, minifiedFile);
             }
         }

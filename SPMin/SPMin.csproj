@@ -59,6 +59,7 @@
   <ItemGroup>
     <Compile Include="CheckInType.cs" />
     <Compile Include="CheckInTypeDetector.cs" />
+    <Compile Include="Collections\SerializableDictionary.cs" />
     <Compile Include="Controls\AssetRegistrationControl.cs" />
     <Compile Include="Controls\CssRegistration.cs" />
     <Compile Include="Controls\JsRegistration.cs" />
@@ -68,6 +69,7 @@
       <DependentUpon>SPMin.feature</DependentUpon>
     </Compile>
     <Compile Include="FileContentParser.cs" />
+    <Compile Include="FileHashDictionary.cs" />
     <Compile Include="FileNameParser.cs" />
     <Compile Include="FileMinifier.cs" />
     <Compile Include="Constants.cs" />
