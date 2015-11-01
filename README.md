@@ -120,3 +120,10 @@ $site.Dispose()
 
 #### Previewing production mode
 When the environment mode is set to development, you can add the `?spmin=production` query string to your URL in order to preview how SPMin will render the controls in production mode.
+
+## Contributing
+1. Fork it
+2. Create your feature branch (`git checkout -b my-new-feature`)
+3. Commit your changes (`git commit -am 'Add some feature'`)
+4. Push to the branch (`git push origin my-new-feature`)
+5. Create new Pull Request
