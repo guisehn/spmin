@@ -116,7 +116,7 @@ namespace SPMin.SPMinEventReceiver
 
             RunForMainFile(properties, (fileNameParser, targetFolder, mainFile, minifiedFile) =>
             {
-                var reader = new FileReader(mainFile);
+                var reader = new FileContentParser(mainFile);
                 var content = reader.GetCompiledContent();
                 var minifier = new FileMinifier(fileNameParser.FileExtension, content);
 

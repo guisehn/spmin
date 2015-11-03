@@ -68,12 +68,12 @@
     <Compile Include="Features\SPMin\SPMin.EventReceiver.cs">
       <DependentUpon>SPMin.feature</DependentUpon>
     </Compile>
-    <Compile Include="FileContentParser.cs" />
+    <Compile Include="FileInclusionParser.cs" />
     <Compile Include="FileHashDictionary.cs" />
     <Compile Include="FileNameParser.cs" />
     <Compile Include="FileMinifier.cs" />
     <Compile Include="Constants.cs" />
-    <Compile Include="FileReader.cs" />
+    <Compile Include="FileContentParser.cs" />
     <Compile Include="FileUtilities.cs" />
     <Compile Include="Minifiers\CssMinifier.cs" />
     <Compile Include="Minifiers\IMinifier.cs" />
@@ -81,6 +81,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SPMinEventReceiver\SPMinEventReceiver.cs" />
     <Compile Include="SPMinException.cs" />
+    <Compile Include="SPMinLoggingService.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Features\SPMin\SPMin.feature">

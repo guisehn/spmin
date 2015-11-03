@@ -1,31 +1,65 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Microsoft.SharePoint;
 using System.Linq;
 using System.Text;
-using System.Text.RegularExpressions;
+using System;
 
 namespace SPMin
 {
     public class FileContentParser
     {
-        public static string[] GetIncludedFiles(string fileContent)
+        private SPFile mainFile;
+        private SPFolder parentFolder;
+        private string mainContent;
+
+        public string[] IncludedFiles { get; private set; }
+
+        public FileContentParser(SPFile file)
         {
-            string[] includedFiles = new string[0];
-            Match match = Regex.Match(fileContent, @"^(?:\s+)?/\*(.*?)\*/", RegexOptions.Singleline);
+            this.mainFile = file;
+            this.parentFolder = file.ParentFolder;
+            this.mainContent = GetContent(mainFile);
+            
+            IncludedFiles = FileInclusionParser.GetIncludedFiles(mainContent);
+        }
 
-            if (match.Success)
+        public string GetCompiledContent()
+        {
+            var finalContent = new StringBuilder();
+
+            foreach (string includedFileName in this.IncludedFiles)
             {
-                var lines = match.Groups[1].Value.Trim().Split('\n');
-                var linesWithIncludes = lines.Where(line => line.Trim().StartsWith("*="));
+                SPFile includedFile = FileUtilities.GetFile(parentFolder, includedFileName);
 
-                includedFiles = linesWithIncludes
-                    .Select(l => l.Replace("*=", "").Trim())
-                    .Where(l => l != "")
-                    .Distinct()
-                    .ToArray();
+                if (includedFile != null && includedFile.Exists)
+                    finalContent.AppendLine(GetContent(includedFile) + FileSeparator);
             }
 
-            return includedFiles;
+            finalContent.AppendLine(mainContent);
+
+            return finalContent.ToString();
+        }
+
+        private string GetContent(SPFile file)
+        {
+            return Encoding.UTF8.GetString(RemoveBOM(file.OpenBinary()));
+        }
+
+        private byte[] RemoveBOM(byte[] bytes)
+        {
+            byte[] preamble = Encoding.UTF8.GetPreamble();
+
+            if (bytes.Take(preamble.Length).SequenceEqual(preamble))
+                bytes = bytes.Skip(preamble.Length).ToArray();
+
+            return bytes;
+        }
+
+        private string FileSeparator
+        {
+            get
+            {
+                return (mainFile.Name.EndsWith(".js", StringComparison.InvariantCultureIgnoreCase)) ? ";" : "";
+            }
         }
     }
 }

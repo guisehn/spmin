@@ -1,6 +1,6 @@
 ﻿using Microsoft.SharePoint;
+using Microsoft.SharePoint.Administration;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
@@ -31,9 +31,35 @@ namespace SPMin
             return String.Join("/", parts.Take(parts.Length - 1).ToArray());
         }
 
-        public static SPFile GetFile(SPFolder folder, string fileName)
+        public static SPFile GetFile(SPFolder folder, string relativeFilePath)
         {
-            return folder.Files.OfType<SPFile>().FirstOrDefault(f => f.Name == fileName);
+            var currentFolder = folder;
+            var parts = relativeFilePath.Split('/');
+            var pathFolders = parts.Take(parts.Length - 1);
+            var fileName = parts.Last();
+
+            try
+            {
+                foreach (var folderName in pathFolders)
+                {
+                    if (folderName == "..")
+                        currentFolder = currentFolder.ParentFolder;
+                    else
+                        currentFolder = currentFolder.SubFolders.OfType<SPFolder>().FirstOrDefault(f => f.Name == folderName);
+
+                    if (currentFolder == null || !currentFolder.Exists)
+                        return null;
+                }
+            }
+            catch (Exception exception)
+            {
+                var message = String.Format("Error on FileUtilities#GetFile for parameters \"{0}\", \"{1}\"\n{2}",
+                    folder.ServerRelativeUrl, relativeFilePath, exception);
+                SPMinLoggingService.LogError(message, TraceSeverity.Unexpected);
+                return null;
+            }
+
+            return currentFolder.Files.OfType<SPFile>().FirstOrDefault(f => f.Name == fileName);
         }
 
         public static string GetMD5Hash(byte[] inputBytes)

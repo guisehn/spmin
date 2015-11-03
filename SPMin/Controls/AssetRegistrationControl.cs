@@ -133,7 +133,7 @@ namespace SPMin.Controls
             try
             {
                 SPFile file = web.GetFile(filePath);
-                var reader = new FileReader(file);
+                var reader = new FileContentParser(file);
                 string fileDirectory = FileUtilities.GetDirectoryPathFromFilePath(filePath);
 
                 foreach (string includedFile in reader.IncludedFiles)
