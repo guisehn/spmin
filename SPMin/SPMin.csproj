@@ -59,6 +59,7 @@
     <Compile Include="Controls\AssetRegistrationControl.cs" />
     <Compile Include="Controls\CssRegistration.cs" />
     <Compile Include="Controls\JsRegistration.cs" />
+    <Compile Include="CssRelativePathResolver.cs" />
     <Compile Include="EnvironmentMode.cs" />
     <Compile Include="Environment.cs" />
     <Compile Include="Features\SPMin\SPMin.EventReceiver.cs">

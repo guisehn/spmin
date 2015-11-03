@@ -41,7 +41,12 @@ namespace SPMin
 
         private string GetContent(SPFile file)
         {
-            return Encoding.UTF8.GetString(RemoveBOM(file.OpenBinary()));
+            string content = Encoding.UTF8.GetString(RemoveBOM(file.OpenBinary()));
+
+            if (file.Name.EndsWith(".css", StringComparison.InvariantCultureIgnoreCase))
+                content = new CssRelativePathResolver(file.ServerRelativeUrl, content).Resolve();
+
+            return content;
         }
 
         private byte[] RemoveBOM(byte[] bytes)
