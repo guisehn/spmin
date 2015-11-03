@@ -1,92 +1,98 @@
 # SPMin
-Automatic JavaScript and CSS minification for SharePoint's Style Library.
+Automatic JavaScript and CSS minification and combination for SharePoint's Style Library.
 
-## How it works
-This solution contains an event receiver that automatizes the minification of JavaScript and CSS files inside the
-Style Library. It can also combine multiple files into one to minimize the number of HTTP requests in the page.
+## Usage
+SPMin is a farm solution that automatizes the minification and combination of JavaScript and CSS files inside the Style Library. The [release page](https://github.com/ghsehn/SPMin/releases/latest) contains the installation instructions.
 
-## How to use
-SPMin will create a minified version for the files whose names end with `.spm.js` or `.spm.css` in the Style Library.
-This means that you can apply this solution into your project without any impact to existing assets.
+To start using it, create a file with the name ending with `spm.js` or `spm.css` in any folder inside the Style Library. As it will trigger the minification only for files with this name pattern, it is possible to apply this solution into your existing project gradually only for specific assets.
 
-For each of these files, it will create a minified correspondent one in the `spmin` folder with the minified code. Operations
-such as editing, checking-out/checking-in and deleting are synchronized for the minified files.
+For the file `/Style Library/acme/js/app.spm.js`, for example, it will create a correspondent one `/Style Library/spmin/acme-js-app.js` with the minified code.
+
+Operations such as editing, checking-out/checking-in and deleting are synchronized for the minified files.
+
+### Assets combination
+SPMin provides a way to concatenate multiple assets into one file, which can reduce the number of HTTP requests that your user's browser makes to render the web page. Web browsers are limited in the number of requests that they can make in parallel, so fewer requests can mean faster loading for your application. It works similar to [Ruby on Rails's asset pipeline](https://github.com/rails/sprockets).
+
+You can tell SPMin to concatenate assets by adding a comment at the top of the `.spm.js` or `.spm.css` code declaring which files to include. For the following sample files:
+
+##### /Style Library/acme/js/app.spm.js
+```javascript
+/*
+ *= file1.js
+ *= file2.js
+ */
+alert('Hello from app.spm.js');
+```
+
+##### /Style Library/acme/js/file1.js
+```javascript
+alert('Hello from file1.js');
+```
+
+##### /Style Library/acme/js/file2.js
+```javascript
+alert('Hello from file2.js');
+```
+
+It will automatically generate this when `app.spm.js` is saved:
+
+##### /Style Library/spmin/acme-js-app.js
+```javascript
+alert('Hello from file1.js');alert('Hello from file2.js');alert('Hello from app.spm.js')
+```
+
+There are a few points that are worth attention:
+
+- The comment that specifies the files to be included must be at the very top of the code.
+- The included files must be at the same folder of the file that is including them.
+- You must re-save or check-in the file with the inclusion directives to re-generate the minified/combined file. Updating only the included files will not trigger it.
+
+### Fingerprinting
+SPMin helps to invalidate the cache of CSS and JavaScript files in your users' web browsers whenever you modify them by using fingerprinting, which is a technique that makes the name of a file dependent on its content. Every time you check-in a `.spm.js/css` file, SPMin will rename the minified correspondent file to include the MD5 hash of its contents on its name.
+
+Once `/Style Library/acme/js/app.spm.js` is checked-in with the content `alert('test');`, for example, the minified file path will be `/Style Library/spmin/acme-js-app-0ef17d2cda19e1b18a4110b93f0bb9e8.js`. Whenever you change the code and check-in `app.spm.js` again, it will change the hash on the file name again in order to invalidate your users' web browsers cache.
+
+You don't need to care about updating the JavaScript/CSS inclusion tags throughout your site to handle the filename changes because SPMin includes some controls to automatically do this and some other things for you. This will be explained in the [next section](#including-assets-in-your-page).
 
 ### Including assets in your page
-SPMin includes special controls that allow you to include the original assets in your development environment and use the minified version in the production environment, without having to write different code for each environment.
+SPMin includes controls to help with the inclusion of minified assets in the site pages.
 
-In order to use them, first you need to include the following directive at the top of your file:
+To use the controls first you need to include the following directive at the top of your web page file:
 
 ```asp
 <%@ Register TagPrefix="SPMin" Namespace="SPMin.Controls"
 Assembly="SPMin, Version=1.0.0.0, Culture=neutral, PublicKeyToken=a86ef32346edfcab" %>
 ```
 
-Then, you can add the `CssRegistration` control to include a CSS file and the `JsRegistration` control to include a JavaScript file.
+Then you can add the `JsRegistration` control into your page to include a JavaScript file or `CssRegistration` to include a CSS file.
 
 ```asp
-<SPMin:CssRegistration FilePath="path/to/stylesheet.spm.css" runat="server" />
-<SPMin:JsRegistration FilePath="path/to/javascript.spm.js" runat="server" />
+<SPMin:JsRegistration FilePath="acme/js/app.spm.js" runat="server" />
 ```
 
-The path must be always relative to the `Style Library` library of the current site collection. So, in the development environment, the following HTML would have been generated for the above example:
+These are the properties available for the controls:
+
+| Property    | Description  |
+| :---------- | :----------- |
+| FilePath    | The path to the `.spm.css` or `.spm.js` file relative to the Style Library. |
+| IncludeOnce | Indicates if the file should be included only once in the web page, no matter how many times it is included. By default it is `True`, and should be explicity set to `False` if you need to include the same script many times in the page. |
+| AddToHead   | Indicates if the file should be rendered inside `<head>` instead of the place where the control is defined. By default, it is `True` for `CssRegistration` and `False` for `JsRegistration`. |
+
+The generated HTML will change based on the [environment mode](#setting-the-environment-mode).
+
+For the production environment, SPMin will print the inclusion tag pointing directly to the minified/combined file.
 
 ```html
-<link rel='stylesheet' href='/sites/site-collection/Style Library/path/to/stylesheet.spm.css' type='text/css' />
-<script src='/sites/site-collection/Style Library/path/to/javascript.spm.js' type='text/javascript'></script>
+<script src='/Style Library/spmin/acme-js-app-c1e71ca30e01f8b39b5ebc1dc7030578.js' type='text/javascript'></script>
 ```
 
-For the production environment, the minified version would have been printed:
+For the development environment, it will print inclusion tags for the original files to keep debugging the same way as you would do normally.
 
 ```html
-<link rel='stylesheet' href='/sites/site-collection/Style Library/spmin/path-to-stylesheet.css' type='text/css' />
-<script src='/sites/site-collection/Style Library/spmin/path-to-javascript.min.js' type='text/javascript'></script>
+<script src='/Style Library/acme/js/file1.js' type='text/javascript'></script>
+<script src='/Style Library/acme/js/file2.js' type='text/javascript'></script>
+<script src='/Style Library/acme/js/app.spm.js' type='text/javascript'></script>
 ```
-
-These controls will not print duplicated inclusion tags for the same file in the page (it will render only the first one). If you need to include the same JavaScript or CSS file multiple times, add the `IncludeOnce="false"` attribute to the subsequent control definition.
-
-### Combining assets
-
-You can tell SPMin to combine different assets inside one file in order to reduce the number of HTTP requests in the prodution environment and thus improve the client-side loading performance. It works similarly to [Ruby on Rails's asset pipeline](https://github.com/rails/sprockets).
-
-To do this, create a file in the Style Library that ends with `.spm.js` (for example `app.spm.js`) and add a comment at the top of it that specifices the files to be included in the following format:
-
-```javascript
-/*
- *= file1.js
- *= file2.js
- *= file3.js
- */
-```
-
-You can also add more code into this file, but the comment with the included files must be at the top of it.
-
-This will tell SPMin to include the contents of `file1.js`, `file2.js` and `file3.js` at the beginning of `app.spm.js`. The included files must be in the same folder of your main file.
-
-Everytime `app.spm.js` is updated, it will regenerate the minified/combined file. **Important:** if you update `file1.js` alone, it will not regenerate the minified file. You need to manually re-save `app.spm.js` in order to trigger the combination and minification again.
-
-When the environment mode is set to development and you add a `JsRegistration` control pointing to your combined JavaScript file, it will generate one script tag for each included file. So this example:
-
-```asp
-<SPMin:JsRegistration FilePath="path/to/app.spm.js" runat="server" />
-```
-
-Generates this HTML:
-
-```html
-<script src='/sites/site-collection/Style Library/path/to/file1.js' type='text/javascript'></script>
-<script src='/sites/site-collection/Style Library/path/to/file2.js' type='text/javascript'></script>
-<script src='/sites/site-collection/Style Library/path/to/file3.js' type='text/javascript'></script>
-<script src='/sites/site-collection/Style Library/path/to/app.spm.js' type='text/javascript'></script>
-```
-
-In the production environment, it will generate the following HTML:
-
-```html
-<script src='/sites/site-collection/Style Library/path-to-app.js' type='text/javascript'></script>
-```
-
-This also works for CSS files.
 
 ### Setting the environment mode
 
@@ -115,5 +121,9 @@ $site.Dispose()
 #### Previewing production mode
 When the environment mode is set to development, you can add the `?spmin=production` query string to your URL in order to preview how SPMin will render the controls in production mode.
 
-## How to install
-SPMin is a farm solution so it will work only in on-premises SharePoint environments. The install instructions are detailed in the [release page](https://github.com/ghsehn/SPMin/releases/latest).
+## Contributing
+1. Fork it
+2. Create your feature branch (`git checkout -b my-new-feature`)
+3. Commit your changes (`git commit -am 'Add some feature'`)
+4. Push to the branch (`git push origin my-new-feature`)
+5. Create new Pull Request
