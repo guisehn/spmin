@@ -44,7 +44,7 @@ alert('Hello from file1.js');alert('Hello from file2.js');alert('Hello from app.
 There are a few points that are worth attention:
 
 - The comment that specifies the files to be included must be at the very top of the code.
-- The path of the files included in the comment must be relative to the current file location.
+- The path of the files included in the comment must be relative to the current file location. You can use `../file.js` or `subfolder/file.js` to include a file from another folder.
 - You must re-save or check-in the file with the inclusion directives to re-generate the minified/combined file. Updating only the included files will not trigger it.
 
 ### Fingerprinting
