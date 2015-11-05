@@ -1,54 +1,54 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Elements xmlns="http://schemas.microsoft.com/sharepoint/">
   <Receivers ListUrl="Style Library">
-      <Receiver>
-        <Name>SPMinEventReceiverItemAdded</Name>
-        <Type>ItemAdded</Type>
-        <Assembly>$SharePoint.Project.AssemblyFullName$</Assembly>
-        <Class>SPMin.SPMinEventReceiver.SPMinEventReceiver</Class>
-        <SequenceNumber>10000</SequenceNumber>
-      </Receiver>
-      <Receiver>
-        <Name>SPMinEventReceiverItemUpdated</Name>
-        <Type>ItemUpdated</Type>
-        <Assembly>$SharePoint.Project.AssemblyFullName$</Assembly>
-        <Class>SPMin.SPMinEventReceiver.SPMinEventReceiver</Class>
-        <SequenceNumber>10000</SequenceNumber>
-      </Receiver>
-      <Receiver>
-        <Name>SPMinEventReceiverItemDeleted</Name>
-        <Type>ItemDeleted</Type>
-        <Assembly>$SharePoint.Project.AssemblyFullName$</Assembly>
-        <Class>SPMin.SPMinEventReceiver.SPMinEventReceiver</Class>
-        <SequenceNumber>10000</SequenceNumber>
-      </Receiver>
-      <Receiver>
-        <Name>SPMinEventReceiverItemCheckedIn</Name>
-        <Type>ItemCheckedIn</Type>
-        <Assembly>$SharePoint.Project.AssemblyFullName$</Assembly>
-        <Class>SPMin.SPMinEventReceiver.SPMinEventReceiver</Class>
-        <SequenceNumber>10000</SequenceNumber>
-      </Receiver>
-      <Receiver>
-        <Name>SPMinEventReceiverItemCheckedOut</Name>
-        <Type>ItemCheckedOut</Type>
-        <Assembly>$SharePoint.Project.AssemblyFullName$</Assembly>
-        <Class>SPMin.SPMinEventReceiver.SPMinEventReceiver</Class>
-        <SequenceNumber>10000</SequenceNumber>
-      </Receiver>
-      <Receiver>
-        <Name>SPMinEventReceiverItemUncheckedOut</Name>
-        <Type>ItemUncheckedOut</Type>
-        <Assembly>$SharePoint.Project.AssemblyFullName$</Assembly>
-        <Class>SPMin.SPMinEventReceiver.SPMinEventReceiver</Class>
-        <SequenceNumber>10000</SequenceNumber>
-      </Receiver>
-  <Receiver>
-<Name>SPMinEventReceiverItemDeleting</Name>
-<Type>ItemDeleting</Type>
-<Assembly>$SharePoint.Project.AssemblyFullName$</Assembly>
-<Class>SPMin.SPMinEventReceiver.SPMinEventReceiver</Class>
-<SequenceNumber>1000</SequenceNumber>
-</Receiver>
-</Receivers>
+    <Receiver>
+      <Name>SPMinEventReceiverItemAdded</Name>
+      <Type>ItemAdded</Type>
+      <Assembly>$SharePoint.Project.AssemblyFullName$</Assembly>
+      <Class>SPMin.SPMinEventReceiver.SPMinEventReceiver</Class>
+      <SequenceNumber>10000</SequenceNumber>
+    </Receiver>
+    <Receiver>
+      <Name>SPMinEventReceiverItemUpdated</Name>
+      <Type>ItemUpdated</Type>
+      <Assembly>$SharePoint.Project.AssemblyFullName$</Assembly>
+      <Class>SPMin.SPMinEventReceiver.SPMinEventReceiver</Class>
+      <SequenceNumber>10000</SequenceNumber>
+    </Receiver>
+    <Receiver>
+      <Name>SPMinEventReceiverItemDeleted</Name>
+      <Type>ItemDeleted</Type>
+      <Assembly>$SharePoint.Project.AssemblyFullName$</Assembly>
+      <Class>SPMin.SPMinEventReceiver.SPMinEventReceiver</Class>
+      <SequenceNumber>10000</SequenceNumber>
+    </Receiver>
+    <Receiver>
+      <Name>SPMinEventReceiverItemCheckedIn</Name>
+      <Type>ItemCheckedIn</Type>
+      <Assembly>$SharePoint.Project.AssemblyFullName$</Assembly>
+      <Class>SPMin.SPMinEventReceiver.SPMinEventReceiver</Class>
+      <SequenceNumber>10000</SequenceNumber>
+    </Receiver>
+    <Receiver>
+      <Name>SPMinEventReceiverItemCheckedOut</Name>
+      <Type>ItemCheckedOut</Type>
+      <Assembly>$SharePoint.Project.AssemblyFullName$</Assembly>
+      <Class>SPMin.SPMinEventReceiver.SPMinEventReceiver</Class>
+      <SequenceNumber>10000</SequenceNumber>
+    </Receiver>
+    <Receiver>
+      <Name>SPMinEventReceiverItemUncheckedOut</Name>
+      <Type>ItemUncheckedOut</Type>
+      <Assembly>$SharePoint.Project.AssemblyFullName$</Assembly>
+      <Class>SPMin.SPMinEventReceiver.SPMinEventReceiver</Class>
+      <SequenceNumber>10000</SequenceNumber>
+    </Receiver>
+    <Receiver>
+      <Name>SPMinEventReceiverItemDeleting</Name>
+      <Type>ItemDeleting</Type>
+      <Assembly>$SharePoint.Project.AssemblyFullName$</Assembly>
+      <Class>SPMin.SPMinEventReceiver.SPMinEventReceiver</Class>
+      <SequenceNumber>1000</SequenceNumber>
+    </Receiver>
+  </Receivers>
 </Elements>
