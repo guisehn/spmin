@@ -8,7 +8,7 @@ namespace SPMin
 {
     public class SPMinLoggingService : SPDiagnosticsServiceBase
     {
-        private static string AreaName = "Mavention";
+        private static string AreaName = "SPMin";
         private static SPMinLoggingService _instance;
 
         public static SPMinLoggingService Current
