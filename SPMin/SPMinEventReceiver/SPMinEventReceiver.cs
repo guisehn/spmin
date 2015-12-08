@@ -103,7 +103,7 @@ namespace SPMin.SPMinEventReceiver
             var fileNameParser = new FileNameParser(path);
 
             minifiedFile.CheckIn("", SPCheckinType.MajorCheckIn);
-            minifiedFile.Item["Name"] = fileNameParser.GenerateMinifiedVersionFileName(hash);
+            minifiedFile.Item[SPBuiltInFieldId.FileLeafRef] = fileNameParser.GenerateMinifiedVersionFileName(hash);
             minifiedFile.Item.SystemUpdate();
 
             var fileHashDictionary = new FileHashDictionary(properties.ListItem.Web.Site);
