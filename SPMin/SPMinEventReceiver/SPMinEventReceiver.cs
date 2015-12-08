@@ -151,11 +151,12 @@ namespace SPMin.SPMinEventReceiver
 
             var url = FileUtilities.RemoveStyleLibraryFromPath(item.File.Url);
             var fileNameParser = new FileNameParser(url);
-            SPList styleLibrary = properties.ListItem.ParentList;
-            SPFolder spminFolder = EnsureSPMinFolder(styleLibrary);
 
             if (fileNameParser.ShouldBeMinified)
             {
+                SPList styleLibrary = properties.ListItem.ParentList;
+                SPFolder spminFolder = EnsureSPMinFolder(styleLibrary);
+
                 var fileHashDictionary = new FileHashDictionary(properties.ListItem.Web.Site);
                 var fileHash = fileHashDictionary[url];
 
